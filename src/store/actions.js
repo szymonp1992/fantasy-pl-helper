@@ -1,4 +1,5 @@
 export default {
+  // Fetching players and teams data from FPL to pass them to mutations
   async fetchFromFPL() {
     const response = await fetch("../../src/fpl.json");
     const data = await response.json();
@@ -7,6 +8,7 @@ export default {
     console.log(teamsFPLData);
     console.log(playersFPLData);
   },
+  // Fetching players and teams data from Understat to pass them to mutations
   async fetchFromUnderstat() {
     const teamsResponse = await fetch("../../src/understat.json");
     const teamsUnderstatData = await teamsResponse.json();

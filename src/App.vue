@@ -22,16 +22,8 @@ export default {
       await axios.get("http://localhost:8000/understat");
     };
 
+    // Creating store instance in main App.vue file
     const store = useStore();
-
-    // Gettig players data from Vuex Store
-    const playersData = computed(() => {
-      return store.getters.getPlayersFPLData;
-    });
-    // Getting teams data from Vuex Store
-    const teamsData = computed(() => {
-      return store.getters.getTeamsUnderstatData;
-    });
 
     onMounted(async () => {
       // Function fetchData is run on every app launch, getting up to date data
@@ -40,8 +32,6 @@ export default {
       store.dispatch("fetchFromFPL");
       store.dispatch("fetchFromUnderstat");
     });
-
-    return { playersData, teamsData };
   },
 };
 </script>
