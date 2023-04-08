@@ -8,8 +8,8 @@ import rootGetters from "./getters.js";
 const store = createStore({
   state() {
     return {
-      playersData: {},
-      teamsData: {},
+      playersData: [],
+      teamsData: [],
     };
   },
   mutations: rootMutations,

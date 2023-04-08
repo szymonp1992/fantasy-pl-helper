@@ -1,8 +1,8 @@
 export default {
-  // fetchPlayersFromFPL(state, payload) {
-  //   state.playersData = payload;
-  // },
-  // fetchTeamsFromUnderstat(state, payload) {
-  //   state.teamsData = payload;
-  // },
+  updateTeamsData(state, payload) {
+    state.teamsData = payload;
+  },
+  updatePlayersData(state, payload) {
+    state.playersData = payload;
+  },
 };

@@ -29,8 +29,10 @@ export default {
       // Function fetchData is run on every app launch, getting up to date data
       await fetchData();
       // Dispatching actions to fetch data from JSON files and put it in Vuex Store index.js
-      store.dispatch("fetchFromFPL");
-      store.dispatch("fetchFromUnderstat");
+      await store.dispatch("fetchFromFPLAndUnderstat");
+      // Logging state.teamsData to the console
+      console.log(store.state.teamsData);
+      console.log(store.state.playersData);
     });
   },
 };
