@@ -9,7 +9,10 @@ const store = createStore({
   state() {
     return {
       playersData: [],
-      teamsData: [],
+      goalkeepersData: [],
+      defendersData: [],
+      midfieldersData: [],
+      forwardsData: [],
     };
   },
   mutations: rootMutations,

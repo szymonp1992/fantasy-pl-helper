@@ -32,7 +32,8 @@ export default {
       await store.dispatch("fetchFromFPLAndUnderstat");
       // Logging state.teamsData to the console
       console.log(store.state.teamsData);
-      console.log(store.state.playersData);
+      console.log(store.state.goalkeepersData);
+      console.log(store.state.forwardsData);
     });
   },
 };

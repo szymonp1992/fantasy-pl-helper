@@ -120,24 +120,46 @@ export default {
       "yellow_cards",
       "red_cards",
     ];
-    // Removing unnecessary properties from all players data objects
+    // Removing unnecessary properties from all players data objects and editing necessary data
     const playersArray = playersFPLData.map((playerObj) => {
       const newObj = {};
+      // Deleting the unndecessary properties
       for (const key in playerObj) {
         if (keysToLeave.includes(key)) {
           newObj[key] = playerObj[key];
         }
       }
+      // Shortening players' names (e.g. Brazilian players)
       if (playerObj.web_name === playerObj.first_name) {
         newObj["display_name"] = playerObj.web_name;
       } else {
         newObj["display_name"] =
           playerObj.first_name + " " + playerObj.second_name;
       }
+      // Setting a proper cost (FPL API uses price * 10 as their now_cost)
+      newObj.now_cost = playerObj.now_cost / 10;
       return newObj;
     });
-    // Committing updated teams array with all the necessary properties
-    context.commit("updatePlayersData", playersArray);
+    // Splitting playersArray into four arrays by players' positions
+    const goalkeepersArray = playersArray.filter((player) => {
+      return player.element_type === 1;
+    });
+    const defendersArray = playersArray.filter((player) => {
+      return player.element_type === 2;
+    });
+    const midfieldersArray = playersArray.filter((player) => {
+      return player.element_type === 3;
+    });
+    const forwardsArray = playersArray.filter((player) => {
+      return player.element_type === 4;
+    });
+    // Committing updated players arrays sorted by positions with all the necessary properties
+    context.commit("updatePlayersData", {
+      goalkeepersArray,
+      defendersArray,
+      midfieldersArray,
+      forwardsArray,
+    });
   },
 };
 
