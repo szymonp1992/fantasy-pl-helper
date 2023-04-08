@@ -1,4 +1,7 @@
 export default {
+  getGoalkeepersData(state) {
+    return state.goalkeepersData;
+  },
   // getPlayersFPLData(state) {
   //   return state.playersData;
   // },

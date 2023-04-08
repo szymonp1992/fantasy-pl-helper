@@ -6,6 +6,7 @@ import MidfieldersStats from "../views/MidfieldersStats.vue";
 import ForwardsStats from "../views/ForwardsStats.vue";
 import FixtureTicker from "../views/FixtureTicker.vue";
 import TeamsStats from "../views/TeamsStats.vue";
+import TransfersHelper from "../views/TransfersHelper.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: "/forwards-stats",
       name: "forwards-stats",
       component: ForwardsStats,
+    },
+    {
+      path: "/transfers-helper",
+      name: "transfers-helper",
+      component: TransfersHelper,
     },
   ],
 });

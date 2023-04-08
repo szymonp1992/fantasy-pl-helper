@@ -30,10 +30,6 @@ export default {
       await fetchData();
       // Dispatching actions to fetch data from JSON files and put it in Vuex Store index.js
       await store.dispatch("fetchFromFPLAndUnderstat");
-      // Logging state.teamsData to the console
-      console.log(store.state.teamsData);
-      console.log(store.state.goalkeepersData);
-      console.log(store.state.forwardsData);
     });
   },
 };

@@ -32,7 +32,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Players by position
+              Players stats (Fantasy Premier League)
             </a>
             <ul class="dropdown-menu">
               <li>
@@ -60,6 +60,11 @@
           <li class="nav-item">
             <RouterLink to="fixture-ticker" class="nav-link"
               >Fixture ticker</RouterLink
+            >
+          </li>
+          <li class="nav-item">
+            <RouterLink to="transfers-helper" class="nav-link"
+              >Transfers helper</RouterLink
             >
           </li>
         </ul>

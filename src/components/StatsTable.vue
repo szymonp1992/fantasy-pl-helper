@@ -1,12 +1,25 @@
 <template>
-  <th
-    scope="col"
-    @click="($event) => sortColumn('NAZWA_ATRYBUTU')"
-    id="NAZWA_ATRYUBUTU.toLowerCase() + '-header'"
-    :class="
-      activeHeader === 'NAZWA_ATRYBUTU.toLowerCase()' + '-header'
-        ? 'active-header'
-        : ''
-    "
-  ></th>
+  <h1>This is stats table.</h1>
+  <p>{{ playersArray[0] }}</p>
 </template>
+
+<script>
+import { computed } from "vue";
+
+export default {
+  props: {
+    players: {
+      type: Array,
+      required: true,
+    },
+  },
+
+  setup(props) {
+    const playersArray = computed(() => {
+      return props.players;
+    });
+
+    return { playersArray };
+  },
+};
+</script>
