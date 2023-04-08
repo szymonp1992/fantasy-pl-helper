@@ -20,19 +20,14 @@ export default {
       teamsArray.push({
         name: teamsFPLData[i].name,
         strength: teamsFPLData[i].strength,
-        id: i,
+        id: teamsFPLData[i].id,
       });
     }
     // Adding Understat data to teams' objects in teamsArray
     // All the variables that will hold seasonal data for the teams. They will be updated while looping over all games in season (Understat data hold games' stats and not seasonal stats)
-    let xG = 0;
-    let xGA = 0;
-    let npxG = 0;
-    let npxGA = 0;
-    let last5xG = 0;
-    let last5xGA = 0;
-    let last5npxG = 0;
-    let last5npxGA = 0;
+    let [xG, xGA, npxG, npxGA, last5xG, last5xGA, last5npxG, last5npxGA] = [
+      0, 0, 0, 0, 0, 0, 0, 0,
+    ];
     // Creating a variable for current team
     for (let i = 0; i < teamsUnderstatData.length; i++) {
       const teamUnderstatIterated = teamsUnderstatData[i];
@@ -75,28 +70,30 @@ export default {
         last5xGD: last5xGD.toFixed(2),
       });
       // Resetting all the metrics for next team iteration
-      xG = 0;
-      xGA = 0;
-      npxG = 0;
-      npxGA = 0;
-      last5xG = 0;
-      last5xGA = 0;
-      last5npxG = 0;
-      last5npxGA = 0;
-      xGD = 0;
-      npxGD = 0;
-      last5xGD = 0;
+      [
+        xG,
+        xGA,
+        npxG,
+        npxGA,
+        last5xG,
+        last5xGA,
+        last5npxG,
+        last5npxGA,
+        xGD,
+        npxGD,
+        last5xGD,
+      ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     // Committing updated teams array with all the necessary properties
     context.commit("updateTeamsData", teamsArray);
     // PLAYERS DATA SECTION
+    const availablePlayersData = playersFPLData.filter((player) => {
+      return player.status === "a";
+    });
     // Listing all the keys we want to leave as they are in players data object
     const keysToLeave = [
-      "first_name",
-      "second_name",
-      "web_name",
       "status",
-      "team_code",
+      "team",
       "now_cost",
       "total_points",
       "minutes",
@@ -119,16 +116,11 @@ export default {
       "goals_conceded_per_90",
       "yellow_cards",
       "red_cards",
+      "saves",
     ];
     // Removing unnecessary properties from all players data objects and editing necessary data
-    const playersArray = playersFPLData.map((playerObj) => {
+    const playersArray = availablePlayersData.map((playerObj) => {
       const newObj = {};
-      // Deleting the unndecessary properties
-      for (const key in playerObj) {
-        if (keysToLeave.includes(key)) {
-          newObj[key] = playerObj[key];
-        }
-      }
       // Shortening players' names (e.g. Brazilian players)
       if (playerObj.web_name === !playerObj.second_name) {
         newObj["display_name"] = playerObj.web_name;
@@ -136,11 +128,24 @@ export default {
         newObj["display_name"] =
           playerObj.first_name + " " + playerObj.second_name;
       }
+      // Deleting the unndecessary properties
+      for (const key in playerObj) {
+        if (keysToLeave.includes(key)) {
+          newObj[key] = playerObj[key];
+        }
+      }
       // Setting a proper cost (FPL API uses price * 10 as their now_cost)
       newObj.now_cost = playerObj.now_cost / 10;
+      // Setting team name based on team property from playersArray and id property from teamsArray
+      teamsArray.forEach((team) => {
+        if (playerObj.team === team.id) {
+          newObj.team = team.name;
+          return;
+        }
+      });
       return newObj;
     });
-    // Splitting playersArray into four arrays by players' positions
+    // Splitting playersArray into four arrays by players' positions, also removing all unavailable players
     const goalkeepersArray = playersArray.filter((player) => {
       return player.element_type === 1;
     });
@@ -160,6 +165,7 @@ export default {
       midfieldersArray,
       forwardsArray,
     });
+    context.commit("dataIsLoadedStatus");
   },
 };
 

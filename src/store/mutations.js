@@ -8,4 +8,7 @@ export default {
     state.midfieldersData = payload.midfieldersArray;
     state.forwardsData = payload.forwardsArray;
   },
+  dataIsLoadedStatus(state) {
+    state.dataLoadedStatus = true;
+  },
 };

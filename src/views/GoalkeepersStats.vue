@@ -1,7 +1,10 @@
 <template>
   <div class="about">
     <h1>This is goalkeepers stats page</h1>
-    <StatsTable :players="goalkeepers" />
+    <StatsTable
+      :players="goalkeepersData"
+      :statsToDisplay="goalkeeperStatsToDisplay"
+    />
   </div>
 </template>
 
@@ -18,11 +21,20 @@ export default {
   setup() {
     const store = useStore();
 
-    const goalkeepers = computed(() => {
+    const goalkeepersData = computed(() => {
       return store.getters.getGoalkeepersData;
     });
 
-    return { goalkeepers };
+    const goalkeeperStatsToDisplay = [
+      "display_name",
+      "team",
+      "total_points",
+      "minutes",
+      "clean_sheets",
+      "saves",
+    ];
+
+    return { goalkeepersData, goalkeeperStatsToDisplay };
   },
 };
 </script>

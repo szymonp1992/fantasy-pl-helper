@@ -13,6 +13,7 @@ const store = createStore({
       defendersData: [],
       midfieldersData: [],
       forwardsData: [],
+      dataLoadedStatus: false,
     };
   },
   mutations: rootMutations,
