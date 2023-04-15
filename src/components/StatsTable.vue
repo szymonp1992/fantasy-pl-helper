@@ -1,12 +1,24 @@
 <template>
   <h1>This is stats table.</h1>
-  <ul v-for="player in playersArrayRef">
+  <!-- <ul v-for="player in playersArrayRef">
     <li>{{ player }}</li>
-  </ul>
+  </ul> -->
   <div class="container mt-4">
     <table class="table table-striped table-bordered border-light teams-table">
-      <thead></thead>
-      <tbody></tbody>
+      <thead>
+        <tr class="table-secondary">
+          <td v-for="stat in statsToDisplay" :key="stat" scope="col">
+            {{ stat }}
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="playerKeysAndValues in Object.values(playersArrayRef)">
+          <td v-for="player in Object.values(playerKeysAndValues)" scope="col">
+            {{ player }}
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>
@@ -65,3 +77,18 @@ export default {
   },
 };
 </script>
+
+<style>
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+td,
+th {
+  text-align: center;
+  vertical-align: middle;
+  word-break: break-word;
+  hyphens: auto;
+  font-size: 0.75rem;
+}
+</style>

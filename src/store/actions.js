@@ -122,7 +122,7 @@ export default {
     const playersArray = availablePlayersData.map((playerObj) => {
       const newObj = {};
       // Shortening players' names (e.g. Brazilian players)
-      if (playerObj.web_name === !playerObj.second_name) {
+      if (!playerObj.web_name.includes(playerObj.second_name)) {
         newObj["display_name"] = playerObj.web_name;
       } else {
         newObj["display_name"] =
