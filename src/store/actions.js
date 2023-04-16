@@ -135,7 +135,7 @@ export default {
         }
       }
       // Setting a proper cost (FPL API uses price * 10 as their now_cost)
-      newObj.now_cost = playerObj.now_cost / 10;
+      newObj.now_cost = (playerObj.now_cost / 10).toFixed(1);
       // Setting team name based on team property from playersArray and id property from teamsArray
       teamsArray.forEach((team) => {
         if (playerObj.team === team.id) {
