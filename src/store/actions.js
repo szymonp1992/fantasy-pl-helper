@@ -117,6 +117,7 @@ export default {
       "yellow_cards",
       "red_cards",
       "saves",
+      "saves_per_90",
     ];
     // Removing unnecessary properties from all players data objects and editing necessary data
     const playersArray = availablePlayersData.map((playerObj) => {
@@ -143,6 +144,15 @@ export default {
           return;
         }
       });
+      // Changing data type of these props to floats
+      newObj["expected_goals"] = parseFloat(newObj["expected_goals"]);
+      newObj["expected_assists"] = parseFloat(newObj["expected_assists"]);
+      newObj["expected_goal_involvements"] = parseFloat(
+        newObj["expected_goal_involvements"]
+      );
+      newObj["expected_goals_conceded"] = parseFloat(
+        newObj["expected_goals_conceded"]
+      );
       return newObj;
     });
     // Splitting playersArray into four arrays by players' positions, also removing all unavailable players

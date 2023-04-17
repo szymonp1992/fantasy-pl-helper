@@ -2,13 +2,16 @@ export default {
   getGoalkeepersData(state) {
     return state.goalkeepersData;
   },
+  getDefendersData(state) {
+    return state.defendersData;
+  },
+  getMidfieldersData(state) {
+    return state.midfieldersData;
+  },
+  getForwardsData(state) {
+    return state.forwardsData;
+  },
   getDataLoadedStatus(state) {
     return state.dataLoadedStatus;
   },
-  // getPlayersFPLData(state) {
-  //   return state.playersData;
-  // },
-  // getTeamsUnderstatData(state) {
-  //   return state.teamsData;
-  // },
 };

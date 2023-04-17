@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class="container-fluid mt-4">
     <table class="table table-bordered border-secondary teams-table">
       <thead>
         <tr class="table-secondary">
@@ -12,7 +12,7 @@
             @click="sortTableBy(stat)"
           >
             {{ stat.charAt(0).toUpperCase()
-            }}{{ stat.slice(1).replace("_", " ") }}
+            }}{{ stat.slice(1).replaceAll("_", " ") }}
           </th>
         </tr>
       </thead>
@@ -79,7 +79,6 @@ export default {
         return newObj;
       });
       sortTableBy("total_points");
-      console.log(playersArrayRef.value);
     });
 
     //
@@ -91,9 +90,6 @@ export default {
     const currentSortDir = ref("asc");
 
     function sortTableBy(headerName) {
-      playersArrayRef.value = playersArrayRef.value.filter((player) => {
-        return player.minutes > 2100;
-      });
       activeHeader.value = headerName;
       if (headerName === currentSort.value) {
         currentSortDir.value = currentSortDir.value === "desc" ? "asc" : "desc";
@@ -113,7 +109,12 @@ export default {
     //
 
     // Stats that should be sorted ascending (the lower, the better)
-    const reverseStatKeys = ["goals_conceded"];
+    const reverseStatKeys = [
+      "goals_conceded",
+      "goals_conceded_per_90",
+      "expected_goals_conceded",
+      "expected_goals_conceded_per_90",
+    ];
 
     // Function responsible for coloring cells
     function colorCells(statKey, statValue) {

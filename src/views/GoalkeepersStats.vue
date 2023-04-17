@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { computed, watch } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 import StatsTable from "../components/StatsTable.vue";
 
@@ -32,11 +32,17 @@ export default {
       "display_name",
       "team",
       "now_cost",
-      "total_points",
       "minutes",
+      "total_points",
+      "bps",
       "clean_sheets",
+      "clean_sheets_per_90",
       "saves",
+      "saves_per_90",
       "goals_conceded",
+      "goals_conceded_per_90",
+      "expected_goals_conceded",
+      "expected_goals_conceded_per_90",
     ];
 
     const isDataLoaded = computed(() => {
