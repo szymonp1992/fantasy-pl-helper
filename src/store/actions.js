@@ -90,91 +90,110 @@ export default {
     const availablePlayersData = playersFPLData.filter((player) => {
       return player.status === "a";
     });
-    // Listing all the keys we want to leave as they are in players data object
-    const keysToLeave = [
-      "status",
-      "team",
-      "now_cost",
-      "total_points",
-      "minutes",
-      "goals_scored",
-      "assists",
-      "bps",
-      "bonus",
-      "clean_sheets",
-      "clean_sheets_per_90",
-      "element_type",
-      "expected_assists",
-      "expected_assists_per_90",
-      "expected_goal_involvements",
-      "expected_goal_involvements_per_90",
-      "expected_goals",
-      "expected_goals_per_90",
-      "expected_goals_conceded",
-      "expected_goals_conceded_per_90",
-      "goals_conceded",
-      "goals_conceded_per_90",
-      "yellow_cards",
-      "red_cards",
-      "saves",
-      "saves_per_90",
-    ];
-    // Removing unnecessary properties from all players data objects and editing necessary data
-    const playersArray = availablePlayersData.map((playerObj) => {
-      const newObj = {};
-      // Shortening players' names (e.g. Brazilian players)
-      if (!playerObj.web_name.includes(playerObj.second_name)) {
-        newObj["display_name"] = playerObj.web_name;
-      } else {
-        newObj["display_name"] =
-          playerObj.first_name + " " + playerObj.second_name;
-      }
-      // Deleting the unndecessary properties
-      for (const key in playerObj) {
-        if (keysToLeave.includes(key)) {
-          newObj[key] = playerObj[key];
-        }
-      }
-      // Setting a proper cost (FPL API uses price * 10 as their now_cost)
-      newObj.now_cost = (playerObj.now_cost / 10).toFixed(1);
-      // Setting team name based on team property from playersArray and id property from teamsArray
-      teamsArray.forEach((team) => {
-        if (playerObj.team === team.id) {
-          newObj.team = team.name;
-          return;
-        }
-      });
-      // Changing data type of these props to floats
-      newObj["expected_goals"] = parseFloat(newObj["expected_goals"]);
-      newObj["expected_assists"] = parseFloat(newObj["expected_assists"]);
-      newObj["expected_goal_involvements"] = parseFloat(
-        newObj["expected_goal_involvements"]
-      );
-      newObj["expected_goals_conceded"] = parseFloat(
-        newObj["expected_goals_conceded"]
-      );
-      return newObj;
-    });
+    // Splitting players array to positions
     // Splitting playersArray into four arrays by players' positions, also removing all unavailable players
-    const goalkeepersArray = playersArray.filter((player) => {
+    const goalkeepersArray = availablePlayersData.filter((player) => {
       return player.element_type === 1;
     });
-    const defendersArray = playersArray.filter((player) => {
+    const defendersArray = availablePlayersData.filter((player) => {
       return player.element_type === 2;
     });
-    const midfieldersArray = playersArray.filter((player) => {
+    const midfieldersArray = availablePlayersData.filter((player) => {
       return player.element_type === 3;
     });
-    const forwardsArray = playersArray.filter((player) => {
+    const forwardsArray = availablePlayersData.filter((player) => {
       return player.element_type === 4;
     });
+    // Listing all the keys we want to leave as they are in players data object
+    const keysToLeave = {
+      all: [
+        "display_name",
+        "team",
+        "now_cost",
+        "minutes",
+        "total_points",
+        "bps",
+      ],
+      goalkeepers: [
+        "clean_sheets",
+        "clean_sheets_per_90",
+        "saves",
+        "saves_per_90",
+        "goals_conceded",
+        "goals_conceded_per_90",
+        "expected_goals_conceded",
+        "expected_goals_conceded_per_90",
+      ],
+      defenders: [
+        "goals_scored",
+        "assists",
+        "expected_goals",
+        "expected_goals_per_90",
+        "expected_assists",
+        "expected_assists_per_90",
+        "expected_goal_involvements",
+        "expected_goal_involvements_per_90",
+        "clean_sheets",
+        "clean_sheets_per_90",
+        "goals_conceded",
+        "goals_conceded_per_90",
+        "expected_goals_conceded",
+        "expected_goals_conceded_per_90",
+      ],
+      midfielders: [
+        "goals_scored",
+        "assists",
+        "expected_goals",
+        "expected_goals_per_90",
+        "expected_assists",
+        "expected_assists_per_90",
+        "expected_goal_involvements",
+        "expected_goal_involvements_per_90",
+      ],
+      forwards: [
+        "goals_scored",
+        "assists",
+        "expected_goals",
+        "expected_goals_per_90",
+        "expected_assists",
+        "expected_assists_per_90",
+        "expected_goal_involvements",
+        "expected_goal_involvements_per_90",
+      ],
+    };
+    // Creeating new objects that are reduced only to key-value pairs from keysToLeave object, according to players' positions
+    const goalkeepersData = filterPlayersDataByPosition(
+      goalkeepersArray,
+      "goalkeepers",
+      keysToLeave,
+      teamsArray
+    );
+    const defendersData = filterPlayersDataByPosition(
+      defendersArray,
+      "defenders",
+      keysToLeave,
+      teamsArray
+    );
+    const midfieldersData = filterPlayersDataByPosition(
+      midfieldersArray,
+      "midfielders",
+      keysToLeave,
+      teamsArray
+    );
+    const forwardsData = filterPlayersDataByPosition(
+      forwardsArray,
+      "forwards",
+      keysToLeave,
+      teamsArray
+    );
     // Committing updated players arrays sorted by positions with all the necessary properties
     context.commit("updatePlayersData", {
-      goalkeepersArray,
-      defendersArray,
-      midfieldersArray,
-      forwardsArray,
+      goalkeepersData,
+      defendersData,
+      midfieldersData,
+      forwardsData,
     });
+    // Letting the App know that players' data is loaded
     context.commit("dataIsLoadedStatus");
   },
 };
@@ -199,4 +218,60 @@ function sortUnderstatAlphabetically(a, b) {
     return 1;
   }
   return 0;
+}
+
+// Function that leaves only the necessary key-value pairs in players' objects, according to players' positions
+function filterPlayersDataByPosition(
+  playersArray,
+  position,
+  keysToLeave,
+  teamsArr
+) {
+  const filteredArray = playersArray.map((playerObj) => {
+    const newObj = {};
+    // Shortening players' names (e.g. Brazilian players)
+    if (!playerObj.web_name.includes(playerObj.second_name)) {
+      newObj["display_name"] = playerObj.web_name;
+    } else {
+      newObj["display_name"] =
+        playerObj.first_name + " " + playerObj.second_name;
+    }
+    // Deleting the unndecessary properties
+    for (const key in playerObj) {
+      if (
+        keysToLeave[position].includes(key) ||
+        keysToLeave.all.includes(key)
+      ) {
+        newObj[key] = playerObj[key];
+      }
+    }
+    // Setting a proper cost (FPL API uses price * 10 as their now_cost)
+    newObj.now_cost = (playerObj.now_cost / 10).toFixed(1);
+    // Setting team name based on team property from playersArray and id property from teamsArray
+    teamsArr.forEach((team) => {
+      if (playerObj.team === team.id) {
+        newObj.team = team.name;
+        return;
+      }
+    });
+    // Changing data type of these props to floats
+    if (newObj["expected_goals"]) {
+      newObj["expected_goals"] = parseFloat(newObj["expected_goals"]);
+    }
+    if (newObj["expected_assists"]) {
+      newObj["expected_assists"] = parseFloat(newObj["expected_assists"]);
+    }
+    if (newObj["expected_goal_involvements"]) {
+      newObj["expected_goal_involvements"] = parseFloat(
+        newObj["expected_goal_involvements"]
+      );
+    }
+    if (newObj["expected_goals_conceded"]) {
+      newObj["expected_goals_conceded"] = parseFloat(
+        newObj["expected_goals_conceded"]
+      );
+    }
+    return newObj;
+  });
+  return filteredArray;
 }

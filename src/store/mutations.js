@@ -3,10 +3,10 @@ export default {
     state.teamsData = payload;
   },
   updatePlayersData(state, payload) {
-    state.goalkeepersData = payload.goalkeepersArray;
-    state.defendersData = payload.defendersArray;
-    state.midfieldersData = payload.midfieldersArray;
-    state.forwardsData = payload.forwardsArray;
+    state.goalkeepersData = payload.goalkeepersData;
+    state.defendersData = payload.defendersData;
+    state.midfieldersData = payload.midfieldersData;
+    state.forwardsData = payload.forwardsData;
   },
   dataIsLoadedStatus(state) {
     state.dataLoadedStatus = true;

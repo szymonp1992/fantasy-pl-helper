@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid mt-4">
+    <TableFilters></TableFilters>
     <table class="table table-bordered border-secondary teams-table">
       <thead>
         <tr class="table-secondary">
@@ -37,8 +38,12 @@
 
 <script>
 import { computed, ref, onMounted } from "vue";
+import TableFilters from "./TableFilters.vue";
 
 export default {
+  components: {
+    TableFilters,
+  },
   props: {
     players: {
       type: Array,
@@ -78,6 +83,7 @@ export default {
         }
         return newObj;
       });
+      console.log(playersArray.value);
       sortTableBy("total_points");
     });
 
