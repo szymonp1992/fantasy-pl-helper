@@ -96,7 +96,7 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const minMinutesPlayed = ref(0);
     const maxMinutesPlayed = ref(props.maxMinutesPlayed);
     const minPrice = ref(props.minPrice);
@@ -104,7 +104,7 @@ export default {
     const maxPlayerPrice = ref(props.maxPrice);
 
     function onRadioChange(value) {
-      console.log(value);
+      emit("radio-change", value);
     }
 
     return {

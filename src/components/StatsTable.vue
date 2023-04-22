@@ -5,12 +5,13 @@
       :maxPrice="maxPrice"
       :minPrice="minPrice"
       :maxMinutesPlayed="maxMinutesPlayed"
+      @radio-change="handleRadioChange"
     ></TableFilters>
     <table class="table table-bordered border-secondary teams-table">
       <thead>
         <tr class="table-secondary">
           <th
-            v-for="stat in statsToDisplay"
+            v-for="stat in selectedStats"
             :key="stat"
             scope="col"
             class="text-center"
@@ -77,21 +78,11 @@ export default {
     });
 
     // Stats that we want to have in final player object
-    const statsToDisplay = props.statsToDisplay;
+    const statsToDisplay = ref(props.statsToDisplay);
+    const selectedStats = ref(statsToDisplay.value);
 
     onMounted(() => {
-      const playersArrayToManipulate = playersArray.value;
-      // playersArrayRef key-value pairs are filtered with statsToDisplay array. If a key is found in player object, it is left there. If not, it is removed
-      playersArrayRef.value = playersArrayToManipulate.map((playerObj) => {
-        const newObj = {};
-        for (const key of statsToDisplay) {
-          if (playerObj.hasOwnProperty(key)) {
-            newObj[key] = playerObj[key];
-          }
-        }
-        return newObj;
-      });
-      sortTableBy("total_points");
+      handleRadioChange("allRadio");
     });
 
     //
@@ -102,10 +93,13 @@ export default {
     const currentSort = ref("total_points");
     const currentSortDir = ref("asc");
 
-    function sortTableBy(headerName) {
+    function sortTableBy(headerName, filterChange) {
       activeHeader.value = headerName;
       if (headerName === currentSort.value) {
         currentSortDir.value = currentSortDir.value === "desc" ? "asc" : "desc";
+      }
+      if (filterChange) {
+        currentSortDir.value = "desc";
       }
       currentSort.value = headerName;
       playersArrayRef.value = playersArrayRef.value.sort((a, b) => {
@@ -195,6 +189,51 @@ export default {
       return `hsl(${hue}, 70%, 44%)`;
     }
 
+    //
+    // Table reduction logic
+    //
+
+    // Handling of radio (all stats / all season stats / per 90 stats) changes
+    function handleRadioChange(value) {
+      const playersArrayToManipulate = playersArray.value;
+      selectedStats.value = statsToDisplay.value;
+      // Leaving only seasonal stats, not per 90
+      if (value === "allSeasonRadio") {
+        selectedStats.value = statsToDisplay.value.filter((stat) => {
+          return !stat.includes("per_90");
+        });
+      }
+      // Leaving only per 90 stats
+      if (value === "per90Radio") {
+        const per90StatsToLeave = [
+          "display_name",
+          "team",
+          "now_cost",
+          "minutes",
+          "total_points",
+          "per_90",
+        ];
+        // Method to leave only per 90 stats plus necessary ones in the table (some checks if there is any of strings in per90StatsToLeave array included in certain stat key)
+        selectedStats.value = statsToDisplay.value.filter((stat) => {
+          return per90StatsToLeave.some((statToLeave) =>
+            stat.includes(statToLeave)
+          );
+        });
+      }
+
+      // playersArrayRef key-value pairs are filtered with statsToDisplay array. If a key is found in player object, it is left there. If not, it is removed
+      playersArrayRef.value = playersArrayToManipulate.map((playerObj) => {
+        const newObj = {};
+        for (const key of selectedStats.value) {
+          if (playerObj.hasOwnProperty(key)) {
+            newObj[key] = playerObj[key];
+          }
+        }
+        return newObj;
+      });
+      sortTableBy("total_points", true);
+    }
+
     // Checking if all data is loaded from store
     const isDataLoaded = computed(() => {
       return store.getters.getDataLoadedStatus;
@@ -204,13 +243,14 @@ export default {
       isDataLoaded,
       playersArray,
       playersArrayRef,
-      statsToDisplay,
+      selectedStats,
       activeHeader,
       maxPrice,
       minPrice,
       maxMinutesPlayed,
       sortTableBy,
       colorCells,
+      handleRadioChange,
     };
   },
 };
