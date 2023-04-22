@@ -1,6 +1,11 @@
 <template>
   <div class="container-fluid mt-4">
-    <TableFilters></TableFilters>
+    <TableFilters
+      v-if="minPrice < 100"
+      :maxPrice="maxPrice"
+      :minPrice="minPrice"
+      :maxMinutesPlayed="maxMinutesPlayed"
+    ></TableFilters>
     <table class="table table-bordered border-secondary teams-table">
       <thead>
         <tr class="table-secondary">
@@ -38,6 +43,7 @@
 
 <script>
 import { computed, ref, onMounted } from "vue";
+import { useStore } from "vuex";
 import TableFilters from "./TableFilters.vue";
 
 export default {
@@ -56,6 +62,8 @@ export default {
   },
 
   setup(props) {
+    const store = useStore();
+
     //
     // Populating with players' data logic
     //
@@ -83,7 +91,6 @@ export default {
         }
         return newObj;
       });
-      console.log(playersArray.value);
       sortTableBy("total_points");
     });
 
@@ -111,6 +118,32 @@ export default {
     }
 
     //
+    // Getting min and max values for players' minutes and prices
+    //
+
+    const maxPrice = computed(() => {
+      return playersArrayRef.value.reduce((max, player) => {
+        return parseFloat(player.now_cost) > max
+          ? parseFloat(player.now_cost)
+          : max;
+      }, 0);
+    });
+
+    const minPrice = computed(() => {
+      return playersArrayRef.value.reduce((min, player) => {
+        return parseFloat(player.now_cost) < min
+          ? parseFloat(player.now_cost)
+          : min;
+      }, 100);
+    });
+
+    const maxMinutesPlayed = computed(() => {
+      return playersArrayRef.value.reduce((max, player) => {
+        return player.minutes > max ? player.minutes : max;
+      }, 0);
+    });
+
+    //
     // Coloring logic
     //
 
@@ -125,7 +158,7 @@ export default {
     // Function responsible for coloring cells
     function colorCells(statKey, statValue) {
       // Eliminating string type properties (Display name, team, price)
-      if (typeof statValue === "string") return;
+      if (typeof statValue === "string" || statKey === "now_cost") return;
       // Getting maximum value of certain property
       const maxValue = Math.max(
         ...playersArrayRef.value.map((player) => player[statKey])
@@ -162,11 +195,20 @@ export default {
       return `hsl(${hue}, 70%, 44%)`;
     }
 
+    // Checking if all data is loaded from store
+    const isDataLoaded = computed(() => {
+      return store.getters.getDataLoadedStatus;
+    });
+
     return {
+      isDataLoaded,
       playersArray,
       playersArrayRef,
       statsToDisplay,
       activeHeader,
+      maxPrice,
+      minPrice,
+      maxMinutesPlayed,
       sortTableBy,
       colorCells,
     };

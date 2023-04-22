@@ -255,6 +255,9 @@ function filterPlayersDataByPosition(
       }
     });
     // Changing data type of these props to floats
+    if (newObj["now_cost"]) {
+      newObj["now_cost"] = parseFloat(newObj["now_cost"]);
+    }
     if (newObj["expected_goals"]) {
       newObj["expected_goals"] = parseFloat(newObj["expected_goals"]);
     }

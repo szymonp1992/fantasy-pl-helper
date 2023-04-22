@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="row">
+  <div class="row">
     <div class="col-6">
       <div class="input-group">
         <div class="input-group-prepend">
@@ -75,7 +75,46 @@
         </label>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
 
-<script></script>
+<script>
+import { ref } from "vue";
+
+export default {
+  props: {
+    maxPrice: {
+      type: Number,
+      required: true,
+    },
+    minPrice: {
+      type: Number,
+      required: true,
+    },
+    maxMinutesPlayed: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
+    const minMinutesPlayed = ref(0);
+    const maxMinutesPlayed = ref(props.maxMinutesPlayed);
+    const minPrice = ref(props.minPrice);
+    const maxPrice = ref(props.maxPrice);
+    const maxPlayerPrice = ref(props.maxPrice);
+
+    function onRadioChange(value) {
+      console.log(value);
+    }
+
+    return {
+      minMinutesPlayed,
+      maxMinutesPlayed,
+      maxPlayerPrice,
+      minPrice,
+      maxPrice,
+      onRadioChange,
+    };
+  },
+};
+</script>
