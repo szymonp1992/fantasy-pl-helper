@@ -5,7 +5,7 @@
       :maxPrice="maxPrice"
       :minPrice="minPrice"
       :maxMinutesPlayed="maxMinutesPlayed"
-      @radio-change="handleRadioChange"
+      @filters-change="handleFiltersChange"
     ></TableFilters>
     <table class="table table-bordered border-secondary teams-table">
       <thead>
@@ -82,7 +82,12 @@ export default {
     const selectedStats = ref(statsToDisplay.value);
 
     onMounted(() => {
-      handleRadioChange("allRadio");
+      handleFiltersChange({
+        minMinutesPlayed: 0,
+        maxMinutesPlayed: 38 * 90,
+        maxPlayerPrice: 15,
+        radioPicked: "allRadio",
+      });
     });
 
     //
@@ -141,14 +146,6 @@ export default {
     // Coloring logic
     //
 
-    // Stats that should be sorted ascending (the lower, the better)
-    const reverseStatKeys = [
-      "goals_conceded",
-      "goals_conceded_per_90",
-      "expected_goals_conceded",
-      "expected_goals_conceded_per_90",
-    ];
-
     // Function responsible for coloring cells
     function colorCells(statKey, statValue) {
       // Eliminating string type properties (Display name, team, price)
@@ -167,7 +164,7 @@ export default {
       let relativeValue = 0;
       let reverseValue = 0;
       // If statement for stats sorted ascending (the lower, the better)
-      if (reverseStatKeys.indexOf(statKey) > -1) {
+      if (statKey.includes("conceded") > -1) {
         if (statValue > valueRange / 2) {
           reverseValue = statValue - (statValue - valueRange / 2) * 2;
         }
@@ -180,7 +177,7 @@ export default {
         relativeValue = (reverseValue + minValue) / valueRange;
       }
       // If statement for all the other stats (sorted descending, the higher, the better)
-      if (reverseStatKeys.indexOf(statKey) === -1) {
+      if (!statKey.includes("conceded")) {
         relativeValue = (statValue - minValue) / valueRange;
       }
       // Counting hue
@@ -194,17 +191,22 @@ export default {
     //
 
     // Handling of radio (all stats / all season stats / per 90 stats) changes
-    function handleRadioChange(value) {
-      const playersArrayToManipulate = playersArray.value;
+    function handleFiltersChange(data) {
+      const playersArrayToManipulate = playersArray.value.filter((player) => {
+        return (
+          player.now_cost <= data.maxPlayerPrice &&
+          player.minutes >= data.minMinutesPlayed
+        );
+      });
       selectedStats.value = statsToDisplay.value;
       // Leaving only seasonal stats, not per 90
-      if (value === "allSeasonRadio") {
+      if (data.radioPicked === "allSeasonRadio") {
         selectedStats.value = statsToDisplay.value.filter((stat) => {
           return !stat.includes("per_90");
         });
       }
       // Leaving only per 90 stats
-      if (value === "per90Radio") {
+      if (data.radioPicked === "per90Radio") {
         const per90StatsToLeave = [
           "display_name",
           "team",
@@ -231,7 +233,8 @@ export default {
         }
         return newObj;
       });
-      sortTableBy("total_points", true);
+      currentSortDir.value = !currentSortDir;
+      sortTableBy(currentSort.value, true);
     }
 
     // Checking if all data is loaded from store
@@ -250,7 +253,7 @@ export default {
       maxMinutesPlayed,
       sortTableBy,
       colorCells,
-      handleRadioChange,
+      handleFiltersChange,
     };
   },
 };

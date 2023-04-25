@@ -13,9 +13,9 @@
           id="minutes-played-input"
           min="0"
           :max="maxMinutesPlayed"
-          @input.prevent="filterByMinMinutesAndMaxPrice"
           v-model="minMinutesPlayed"
           class="form-control"
+          @change="onFiltersChange"
         />
       </div>
       <div class="input-group mt-2">
@@ -31,9 +31,9 @@
           :min="minPrice"
           :max="maxPrice"
           v-model="maxPlayerPrice"
-          @input.prevent="filterByMinMinutesAndMaxPrice"
           step="0.1"
           class="form-control"
+          @change="onFiltersChange"
         />
       </div>
       <div class="form-check mt-4">
@@ -44,7 +44,8 @@
           id="allRadio"
           value="allRadio"
           checked
-          @change="onRadioChange('allRadio')"
+          @change="onFiltersChange"
+          v-model="radioPicked"
         />
         <label class="form-check-label" for="allRadio"> All stats </label>
       </div>
@@ -55,7 +56,8 @@
           name="filterRadios"
           id="allSeasonRadio"
           value="allSeasonRadio"
-          @change="onRadioChange('allSeasonRadio')"
+          @change="onFiltersChange"
+          v-model="radioPicked"
         />
         <label class="form-check-label" for="allSeasonRadio">
           Only all season stats
@@ -68,7 +70,8 @@
           name="filterRadios"
           id="per90Radio"
           value="per90Radio"
-          @change="onRadioChange('per90Radio')"
+          @change="onFiltersChange"
+          v-model="radioPicked"
         />
         <label class="form-check-label" for="per90Radio">
           Only per 90 stats
@@ -102,9 +105,15 @@ export default {
     const minPrice = ref(props.minPrice);
     const maxPrice = ref(props.maxPrice);
     const maxPlayerPrice = ref(props.maxPrice);
+    const radioPicked = ref();
 
-    function onRadioChange(value) {
-      emit("radio-change", value);
+    function onFiltersChange() {
+      emit("filters-change", {
+        minMinutesPlayed: minMinutesPlayed.value,
+        maxMinutesPlayed: maxMinutesPlayed.value,
+        maxPlayerPrice: maxPlayerPrice.value,
+        radioPicked: radioPicked.value,
+      });
     }
 
     return {
@@ -113,7 +122,8 @@ export default {
       maxPlayerPrice,
       minPrice,
       maxPrice,
-      onRadioChange,
+      radioPicked,
+      onFiltersChange,
     };
   },
 };
