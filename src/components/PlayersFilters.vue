@@ -36,55 +36,17 @@
           @change="onFiltersChange"
         />
       </div>
-      <div class="form-check mt-4">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="filterRadios"
-          id="allRadio"
-          value="allRadio"
-          checked
-          @change="onFiltersChange"
-          v-model="radioPicked"
-        />
-        <label class="form-check-label" for="allRadio"> All stats </label>
-      </div>
-      <div class="form-check">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="filterRadios"
-          id="allSeasonRadio"
-          value="allSeasonRadio"
-          @change="onFiltersChange"
-          v-model="radioPicked"
-        />
-        <label class="form-check-label" for="allSeasonRadio">
-          Only all season stats
-        </label>
-      </div>
-      <div class="form-check">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="filterRadios"
-          id="per90Radio"
-          value="per90Radio"
-          @change="onFiltersChange"
-          v-model="radioPicked"
-        />
-        <label class="form-check-label" for="per90Radio">
-          Only per 90 stats
-        </label>
-      </div>
+      <RadioFilters @radio-change="onFiltersChange"></RadioFilters>
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import RadioFilters from "./RadioFilters.vue";
 
 export default {
+  components: { RadioFilters },
   props: {
     maxPrice: {
       type: Number,
@@ -107,7 +69,10 @@ export default {
     const maxPlayerPrice = ref(props.maxPrice);
     const radioPicked = ref();
 
-    function onFiltersChange() {
+    function onFiltersChange(data) {
+      if (data.radioOptionPicked) {
+        radioPicked.value = data.radioOptionPicked;
+      }
       emit("filters-change", {
         minMinutesPlayed: minMinutesPlayed.value,
         maxMinutesPlayed: maxMinutesPlayed.value,

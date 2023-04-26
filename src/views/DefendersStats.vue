@@ -1,6 +1,5 @@
 <template>
   <div class="about">
-    <h1>This is defenders stats page</h1>
     <KeepAlive>
       <StatsTable
         v-if="isDataLoaded"

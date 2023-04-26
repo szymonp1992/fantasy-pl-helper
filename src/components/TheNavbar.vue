@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand">
-        <img src="#" alt="Bootstrap" width="30" height="30" />
+        <img src="#" alt="FPL Helper App" width="30" height="30" />
       </a>
       <button
         class="navbar-toggler"

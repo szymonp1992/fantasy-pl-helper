@@ -1,12 +1,12 @@
 <template>
   <div class="container-fluid mt-4">
-    <TableFilters
+    <PlayersFilters
       v-if="minPrice < 100"
       :maxPrice="maxPrice"
       :minPrice="minPrice"
       :maxMinutesPlayed="maxMinutesPlayed"
       @filters-change="handleFiltersChange"
-    ></TableFilters>
+    ></PlayersFilters>
     <table class="table table-bordered border-secondary teams-table">
       <thead>
         <tr class="table-secondary">
@@ -45,11 +45,11 @@
 <script>
 import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import TableFilters from "./TableFilters.vue";
+import PlayersFilters from "./PlayersFilters.vue";
 
 export default {
   components: {
-    TableFilters,
+    PlayersFilters,
   },
   props: {
     players: {
