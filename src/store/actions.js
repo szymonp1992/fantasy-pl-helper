@@ -88,7 +88,7 @@ export default {
     context.commit("updateTeamsData", teamsArray);
     // PLAYERS DATA SECTION
     const availablePlayersData = playersFPLData.filter((player) => {
-      return player.status === "a";
+      return player.status === "a" && player.minutes > 0;
     });
     // Splitting players array to positions
     // Splitting playersArray into four arrays by players' positions, also removing all unavailable players

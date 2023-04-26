@@ -45,7 +45,7 @@ import { ref } from "vue";
 
 export default {
   emits: ["radio-change"],
-  setup({ emit }) {
+  setup(_, { emit }) {
     const radioOptionPicked = ref();
 
     function onRadioChange() {

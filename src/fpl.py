@@ -1,4 +1,3 @@
-
 import requests
 import json
 
@@ -6,10 +5,11 @@ import json
 base_url = 'https://fantasy.premierleague.com/api/'
 
 # get data from bootstrap-static endpoint
-# r = requests.get(base_url+'bootstrap-static/').json()
-fpl = json.dumps(requests.get(base_url+'bootstrap-static/').json())
+data = requests.get(base_url+'bootstrap-static/').json()
 
-# script that opens / creates data.json file and writes all fetched data from Premier League API to this file
-file = open("fpl.json", "w")
-file.write(str(fpl))
+# fetch only the elements and teams arrays
+fpl = {'elements': data['elements'], 'teams': data['teams']}
 
+# script that opens / creates fpl.json file and writes the selected data to this file
+with open("fpl.json", "w") as f:
+    json.dump(fpl, f)
