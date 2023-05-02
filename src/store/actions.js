@@ -25,15 +25,28 @@ export default {
     }
     // Adding Understat data to teams' objects in teamsArray
     // All the variables that will hold seasonal data for the teams. They will be updated while looping over all games in season (Understat data hold games' stats and not seasonal stats)
-    let [xG, xGA, npxG, npxGA, last5xG, last5xGA, last5npxG, last5npxGA] = [
-      0, 0, 0, 0, 0, 0, 0, 0,
-    ];
+    let [
+      goals_scored,
+      goals_conceded,
+      xG,
+      xGA,
+      npxG,
+      npxGA,
+      last_5_goals_scored,
+      last_5_goals_conceded,
+      last_5_xG,
+      last_5_xGA,
+      last_5_npxG,
+      last_5_npxGA,
+    ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     // Creating a variable for current team
     for (let i = 0; i < teamsUnderstatData.length; i++) {
       const teamUnderstatIterated = teamsUnderstatData[i];
 
       // Loop adding all the single game statistics to create a sum for whole season
       for (let i = 0; i < teamUnderstatIterated.history.length; i++) {
+        goals_scored += teamUnderstatIterated.history[i]["scored"];
+        goals_conceded += teamUnderstatIterated.history[i]["missed"];
         xG += teamUnderstatIterated.history[i]["xG"];
         xGA += teamUnderstatIterated.history[i]["xGA"];
         npxG += teamUnderstatIterated.history[i]["npxG"];
@@ -45,44 +58,62 @@ export default {
         i < teamUnderstatIterated.history.length;
         i++
       ) {
-        last5xG += teamUnderstatIterated.history[i]["xG"];
-        last5xGA += teamUnderstatIterated.history[i]["xGA"];
-        last5npxG += teamUnderstatIterated.history[i]["npxG"];
-        last5npxGA += teamUnderstatIterated.history[i]["npxGA"];
+        last_5_goals_scored += teamUnderstatIterated.history[i]["scored"];
+        last_5_goals_conceded += teamUnderstatIterated.history[i]["missed"];
+        last_5_xG += teamUnderstatIterated.history[i]["xG"];
+        last_5_xGA += teamUnderstatIterated.history[i]["xGA"];
+        last_5_npxG += teamUnderstatIterated.history[i]["npxG"];
+        last_5_npxGA += teamUnderstatIterated.history[i]["npxGA"];
       }
       // Calcualtions based on sums that we got from the loops before
+      let goals_difference = goals_scored - goals_conceded;
+      let last_5_goals_difference = last_5_goals_scored - last_5_goals_conceded;
       let xGD = xG - xGA;
       let npxGD = npxG - npxGA;
-      let last5xGD = last5xG - last5xGA;
+      let last_5_xGD = last_5_xG - last_5_xGA;
+      let last_5_npxGD = last_5_npxG - last_5_npxGA;
 
       // Assigning new values to existing team objects
       Object.assign(teamsArray[i], {
-        xG: xG.toFixed(2),
-        xGA: xGA.toFixed(2),
-        npxG: npxG.toFixed(2),
-        npxGA: npxGA.toFixed(2),
-        xGD: xGD.toFixed(2),
-        npxGD: npxGD.toFixed(2),
-        last5xG: last5xG.toFixed(2),
-        last5xGA: last5xGA.toFixed(2),
-        last5npxG: last5npxG.toFixed(2),
-        last5npxGA: last5npxGA.toFixed(2),
-        last5xGD: last5xGD.toFixed(2),
+        goals_scored,
+        goals_conceded,
+        goals_difference,
+        xG: parseFloat(xG.toFixed(2)),
+        xGA: parseFloat(xGA.toFixed(2)),
+        npxG: parseFloat(npxG.toFixed(2)),
+        npxGA: parseFloat(npxGA.toFixed(2)),
+        xGD: parseFloat(xGD.toFixed(2)),
+        npxGD: parseFloat(npxGD.toFixed(2)),
+        last_5_goals_scored,
+        last_5_goals_conceded,
+        last_5_goals_difference,
+        last_5_xG: parseFloat(last_5_xG.toFixed(2)),
+        last_5_xGA: parseFloat(last_5_xGA.toFixed(2)),
+        last_5_npxG: parseFloat(last_5_npxG.toFixed(2)),
+        last_5_npxGA: parseFloat(last_5_npxGA.toFixed(2)),
+        last_5_xGD: parseFloat(last_5_xGD.toFixed(2)),
+        last_5_npxGD: parseFloat(last_5_npxGD.toFixed(2)),
       });
       // Resetting all the metrics for next team iteration
       [
+        goals_scored,
+        goals_conceded,
+        goals_difference,
         xG,
         xGA,
         npxG,
         npxGA,
-        last5xG,
-        last5xGA,
-        last5npxG,
-        last5npxGA,
+        last_5_goals_scored,
+        last_5_goals_conceded,
+        last_5_goals_difference,
+        last_5_xG,
+        last_5_xGA,
+        last_5_npxG,
+        last_5_npxGA,
         xGD,
         npxGD,
-        last5xGD,
-      ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        last_5_xGD,
+      ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     // Committing updated teams array with all the necessary properties
     context.commit("updateTeamsData", teamsArray);

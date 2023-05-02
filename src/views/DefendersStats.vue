@@ -1,23 +1,21 @@
 <template>
   <div class="about">
-    <KeepAlive>
-      <StatsTable
-        v-if="isDataLoaded"
-        :players="defendersData"
-        :statsToDisplay="defenderStatsToDisplay"
-      />
-    </KeepAlive>
+    <PlayersStatsTable
+      v-if="isDataLoaded"
+      :players="defendersData"
+      :statsToDisplay="defenderStatsToDisplay"
+    />
   </div>
 </template>
 
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import StatsTable from "../components/StatsTable.vue";
+import PlayersStatsTable from "../components/PlayersStatsTable.vue";
 
 export default {
   components: {
-    StatsTable,
+    PlayersStatsTable,
   },
 
   setup() {

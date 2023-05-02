@@ -1,23 +1,24 @@
 <template>
   <div class="about">
-    <KeepAlive>
-      <StatsTable
-        v-if="isDataLoaded"
-        :players="midfieldersData"
-        :statsToDisplay="midfielderStatsToDisplay"
-      />
-    </KeepAlive>
+    <PlayersStatsTable
+      v-if="isDataLoaded"
+      :players="midfieldersData"
+      :statsToDisplay="midfielderStatsToDisplay"
+    />
+    <TheLoadingModal v-else />
   </div>
 </template>
 
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import StatsTable from "../components/StatsTable.vue";
+import PlayersStatsTable from "../components/PlayersStatsTable.vue";
+import TheLoadingModal from "../components/TheLoadingModal.vue";
 
 export default {
   components: {
-    StatsTable,
+    PlayersStatsTable,
+    TheLoadingModal,
   },
 
   setup() {

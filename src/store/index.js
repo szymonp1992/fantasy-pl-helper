@@ -13,6 +13,7 @@ const store = createStore({
       defendersData: [],
       midfieldersData: [],
       forwardsData: [],
+      teamsData: [],
       dataLoadedStatus: false,
     };
   },

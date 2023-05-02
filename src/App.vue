@@ -1,4 +1,5 @@
 <template>
+  <!-- <TheLoadingModal v-if="!isDataLoaded" /> -->
   <TheNavbar />
   <div class="container-fluid"><RouterView /></div>
 </template>

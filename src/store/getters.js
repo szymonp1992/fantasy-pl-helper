@@ -14,4 +14,7 @@ export default {
   getDataLoadedStatus(state) {
     return state.dataLoadedStatus;
   },
+  getTeamsData(state) {
+    return state.teamsData;
+  },
 };
